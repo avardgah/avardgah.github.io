@@ -52,6 +52,11 @@ $.get("data/categories.json" , function(data, status){
 });
 
 function load_cat(id) {
+    $("#items").html(`
+    <div class="spinner-border text-success" role="status">
+        <span class="sr-only">در حال بارگزاری...</span>
+    </div>
+    `);
     $.get("data/category_" + id + ".json" , function(data, status){
         $("#items").html('');
         data.forEach(obj => {
@@ -64,7 +69,12 @@ function load_cat(id) {
                 </span>
                 </td>
                 <td>
-                <a href="#" class="btn btn-sm btn-danger my-1 my-sm-0">
+                <span>
+                ` + obj['date'] + `
+                </span>
+                </td>
+                <td>
+                <a href="?p=read&c=` + id + `&i=` + obj['index'] + `" class="btn btn-sm btn-danger my-1 my-sm-0">
                     <span class="fas fa-zoom mr-1"></span>
                     دریافت اطلاعات</a>
                 </td>
