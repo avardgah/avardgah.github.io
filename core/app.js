@@ -5,25 +5,38 @@ function load_rss() {
     $.ajax({
             headers: { "Accept": "application/xml"},
             type: 'GET',
-            url: 'https://basna.ir/fa/rss/allnews',
+            url: 'https://cors-anywhere.herokuapp.com/https://basna.ir/fa/rss/allnews',
             crossDomain: true,
             beforeSend: function(xhr){
-                xhr.withCredentials = true;
-        },
-        success: function(data, textStatus, request){
-            var $xml = $(data);
-            $xml.find("item").each(function() {
-                var $this = $(this),
-                    item = {
-                        title: $this.find("title").text(),
-                        link: $this.find("link").text(),
-                        description: $this.find("description").text(),
-                        pubDate: $this.find("pubDate").text(),
-                        author: $this.find("author").text()
-                }
-                alert(item);
-            });
-        }
+                // xhr.withCredentials = true;
+                xhr.setRequestHeader(
+                    'X-Requested-With',
+                    {
+                        toString: function() { return 'XMLHttpRequest'; }
+                    }
+                );
+            },
+            success: function(data, textStatus, request){
+                var $xml = $(data);
+                $('.modal-body').html('');
+                $xml.find("item").each(function() {
+                    var $this = $(this),
+                        item = {
+                            title: $this.find("title").text(),
+                            link: $this.find("link").text(),
+                            description: $this.find("description").text(),
+                            pubDate: $this.find("pubDate").text(),
+                            author: $this.find("author").text()
+                    }
+                    $('.modal-body').append(`
+                    <div class="row">
+                    <a href="` + item.link + `">` + item.title + `</a>
+                    <p>` + item.description + `</p>
+                    <span>` + item.pubDate + `</span>
+                    </div>
+                    `);
+                });
+            }
     });
 
 }
@@ -46,12 +59,12 @@ function load_cat(id) {
             <tr>
                 <th scope="row">` + obj['index'] + `</th>
                 <td>
-                <a href="#">
+                <span>
                 ` + obj['content'] + `
-                </a>
+                </span>
                 </td>
                 <td>
-                <a class="btn btn-sm btn-danger my-1 my-sm-0">
+                <a href="#" class="btn btn-sm btn-danger my-1 my-sm-0">
                     <span class="fas fa-zoom mr-1"></span>
                     دریافت اطلاعات</a>
                 </td>
