@@ -1,15 +1,31 @@
 // Load RSS feed
 
-$('#categories').append(`
-    <a onclick="load_rss()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-    دریافت اطلاعات از سرور‌های دیگر
-    <span class="badge badge-primary badge-pill ml-auto">` + 10 + `</span>
-    </a>
-`);
-
-
 function load_rss() {
-    
+
+    $.ajax({
+            headers: { "Accept": "application/xml"},
+            type: 'GET',
+            url: 'https://basna.ir/fa/rss/allnews',
+            crossDomain: true,
+            beforeSend: function(xhr){
+                xhr.withCredentials = true;
+        },
+        success: function(data, textStatus, request){
+            var $xml = $(data);
+            $xml.find("item").each(function() {
+                var $this = $(this),
+                    item = {
+                        title: $this.find("title").text(),
+                        link: $this.find("link").text(),
+                        description: $this.find("description").text(),
+                        pubDate: $this.find("pubDate").text(),
+                        author: $this.find("author").text()
+                }
+                alert(item);
+            });
+        }
+    });
+
 }
 
 // Load categories
